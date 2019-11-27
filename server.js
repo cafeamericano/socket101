@@ -37,18 +37,15 @@ server = app.listen(4001);
 const io = require("socket.io")(server);
 
 io.on("connection", socket => {
-  console.log("New user connected");
+  console.log("New user connected at " + socket.id);
+  socket.emit("new-user");
 
-  socket.on("hello", data => {
-    socket.message = data.message;
-  });
-
-  socket.on("world", data => {
-    io.sockets.emit("world", {
-      text: "banana",
-      text2: "tree"
-    });
-  });
+  // socket.on("world", data => {
+  //   io.sockets.emit("world", {
+  //     text: "banana",
+  //     text2: "tree"
+  //   });
+  // });
 });
 
 //   console.log("Worker %d running!", cluster.worker.id);
