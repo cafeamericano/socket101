@@ -17,8 +17,10 @@
         socket.emit('new-user', 'A new user has connected');
 
         //When new-user comes in, append that 
-        socket.on('new-user', function(message){
-          $('section').append(message);
+        socket.on('new-user', function(response){
+          console.log(response)
+          $('section').append(response.message);
+          $('section').append(' on worker ' + response.worker + '.');
           $('section').append('<br/>');
         });
         
