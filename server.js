@@ -1,52 +1,23 @@
-const cluster = require("cluster");
-const express = require("express");
-const app = express();
+//Import express
+var app = require('express')();
 
-app.use(express.static(__dirname + "/public"));
+//Import HTTP and socketio
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-// // Code to run if we're in the master process
-// if (cluster.isMaster) {
-//   // Count the machine's CPUs
-//   var cpuCount = require("os").cpus().length;
+//Define our port
+var port = process.env.PORT || 4000;
 
-//   // Create a worker for each CPU
-//   for (var i = 0; i < cpuCount; i += 1) {
-//     cluster.fork();
-//   }
-
-//   // Listen for dying workers
-//   cluster.on("exit", function(worker) {
-//     // Replace the dead worker, we're not sentimental
-//     console.log("Worker %d died :(", worker.id);
-//     cluster.fork();
-//   });
-
-//   // Code to run if we're in a worker process
-// } else {
-// Add a basic route – index page
-app.get("/", function(request, response) {
-  // console.log("Request to worker %d", cluster.worker.id);
-  //response.send("Hello from Worker " + cluster.worker.id);
-  response.sendFile("/index.html");
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
 });
 
-console.log("listening");
-// Bind to a port
-server = app.listen(4001);
-
-const io = require("socket.io")(server);
-
-io.on("connection", socket => {
-  console.log("New user connected at " + socket.id);
-  socket.emit("new-user");
-
-  // socket.on("world", data => {
-  //   io.sockets.emit("world", {
-  //     text: "banana",
-  //     text2: "tree"
-  //   });
-  // });
+io.on('connection', function(socket){
+  socket.on('new-user', function(message){
+    io.emit('new-user', message);
+  });
 });
 
-//   console.log("Worker %d running!", cluster.worker.id);
-// }
+http.listen(port, function(){
+  console.log('Server listening on ' + port);
+});
