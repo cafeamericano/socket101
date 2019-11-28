@@ -20,7 +20,6 @@
         socket.on('new-user', function(response){
           console.log(response)
           $('section').append(response.message);
-          $('section').append(' on worker ' + response.worker + '.');
           $('section').append('<br/>');
         });
         
